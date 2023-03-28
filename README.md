@@ -27,7 +27,7 @@ shopify theme dev --store=off-paper-dev-challenge.myshopify.com
 
 If this is your first time, you'll be prompted to log into Shopify Partners. You can log in with the credentials that were given to you in our introductory Zoom call. 
 
-Once you successfilly log in, you can return to your terminal. 
+Once you successfully log in, you can return to your terminal. 
 
 When your develepment server is up, the CLI will provide you three links:
 
