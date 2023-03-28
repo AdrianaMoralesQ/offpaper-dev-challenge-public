@@ -43,7 +43,7 @@ If you make any changes via the development customizer, you can pull them using 
 shopify theme pull
 ```
 
-You'll be working in the file **featured-in-logos.liquid**.
+You'll be working in the file **featured-in-logos.liquid**. You can find this file in the **sections** directory.
 Don't forget to commit your changes when you've finished. :)
 
 ## And now, onto the task at hand.
