@@ -1,0 +1,157 @@
+{{ 'section-multicolumn.css' | asset_url | stylesheet_tag }}
+
+{{ 'section-featured-in-logos.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    /* TODO #1: Our client has requested the ability to adjust the top and bottom padding of this section via the theme customizer. To fulfill this requirement, please add an input setting to the schema at the bottom of the file. Additionally, remember to include your dynamic styles here. I've provided a starting point for you. HINT: You can take a look at the other sections in this theme to see how it's done. */
+    padding-top: ;
+    padding-bottom: ;
+  }
+{%- endstyle -%}
+
+<div class="multicolumn-logos multicolumn">
+  <div class="page-width section-{{ section.id }}-padding isolate">
+      <ul class="multicolumn-list grid grid--{{ section.settings.columns_mobile }}-col-tablet-down grid--{{ section.settings.columns_desktop }}-col-desktop"
+        role="list">
+
+        {%- liquid
+          assign highest_ratio = 0
+          for block in section.blocks
+            if block.settings.image.aspect_ratio > highest_ratio
+              assign highest_ratio = block.settings.image.aspect_ratio
+            endif
+          endfor
+        -%}
+        {%- for block in section.blocks -%}
+          {%- assign empty_column = '' -%}
+          {%- if block.settings.image == blank -%}
+            {%- assign empty_column = 'multicolumn-list__item--empty' -%}
+          {%- endif -%}
+
+          <li class="multicolumn-list__item grid__item center {{ empty_column }}" {{ block.shopify_attributes }}>
+            <div class="multicolumn-card content-container">
+              {%- if block.settings.image != blank -%}
+                <div class="multicolumn-card__image-wrapper multicolumn-card__image-wrapper--{{ section.settings.image_width }}-width">
+                  <div class="media media--transparent media--adapt" style="padding-bottom: {{ 1 | divided_by: highest_ratio | times: 100 }}%;">
+
+                    {%- if block.settings.link != blank -%}
+                      {% comment %} TODO #2: Our client requires that each logo be clickable, with the capability to dynamically change each link within the customizer. To achieve this functionality, please add an input setting to the schema, along with the corresponding HTML and liquid tag required to render the link. As a helpful hint, you may want to apply the "media" and "media--transparent" classes to your HTML element to address any styling concerns. {% endcomment %}
+                    {%- endif -%}
+
+                      {%- capture sizes -%}(min-width: 990px) {% if section.blocks.size <= 2 %}710px{% else %}550px{% endif %}, (min-width: 750px) {% if section.blocks.size == 1 %}710px{% else %}550px{% endif %}, calc(100vw - 30px){%- endcapture -%}
+
+                      {{ block.settings.image | image_url: width: 1420 | image_tag:
+                        loading: 'lazy',
+                        sizes: sizes,
+                        widths: '275, 550, 710, 1420',
+                        class: 'multicolumn-card__image'
+                      }}
+
+                  </div>
+                </div>
+                {%- else -%}
+                {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+              {%- endif -%}
+            </div>
+          </li>
+        {%- endfor -%}
+      </ul>
+  </div>
+</div>
+
+<script>
+  {% comment %} TODO #3: Our client has requested a subtle interactive animation, specifically to scale up each logo image on mouseover, but ONLY for those with an attached link (See TODO #2). Please write a script using JavaScript to achieve this effect. Although it's possible to accomplish this with pure CSS, for the purposes of this exercise, JavaScript is required. Please note that the client specifically requested this animation to be applied only to linked images. {% endcomment %}
+</script>
+
+{% schema %}
+{
+  "name": "Logos",
+  "class": "section",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "select",
+      "id": "image_width",
+      "options": [
+        {
+          "value": "third",
+          "label": "t:sections.multicolumn.settings.image_width.options__1.label"
+        },
+        {
+          "value": "half",
+          "label": "t:sections.multicolumn.settings.image_width.options__2.label"
+        },
+        {
+          "value": "full",
+          "label": "t:sections.multicolumn.settings.image_width.options__3.label"
+        }
+      ],
+      "default": "full",
+      "label": "t:sections.multicolumn.settings.image_width.label"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "min": 1,
+      "max": 6,
+      "step": 1,
+      "default": 3,
+      "label": "t:sections.multicolumn.settings.columns_desktop.label"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.multicolumn.settings.header_mobile.content"
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "options": [
+        {
+          "value": "1",
+          "label": "t:sections.multicolumn.settings.columns_mobile.options__1.label"
+        },
+        {
+          "value": "2",
+          "label": "t:sections.multicolumn.settings.columns_mobile.options__2.label"
+        }
+      ],
+      "default": "1",
+      "label": "t:sections.multicolumn.settings.columns_mobile.label"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "column",
+      "name": "Logo",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "t:sections.multicolumn.blocks.column.settings.image.label"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Logos",
+      "blocks": [
+        {
+          "type": "column"
+        },
+        {
+          "type": "column"
+        },
+        {
+          "type": "column"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
